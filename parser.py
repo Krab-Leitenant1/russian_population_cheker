@@ -12,24 +12,28 @@ class Parser():
         self.url = url
 
     def setup(self):
-        self.options = Options()
-        self.options.add_argument("--headless")
-        self.options.add_argument("--window-size=1,1")
-        self.options.add_argument('--disable-blink-features=AutomationControlled')
-        self.options.add_argument('--no-sandbox')
-        self.driver = webdriver.Chrome(options=self.options)
+
         with sqlite3.connect(f"{self.base}.sqlite3") as db:
             cursor = db.cursor()
             cursor.executescript(
                 '''CREATE TABLE IF NOT EXISTS data(id INTEGER PRIMARY KEY , count INTEGER, date DATE)''')
+            print(cursor.execute("SELECT count, date FROM data").fetchall())
     def parse(self):
-        self.driver.get(self.url)
-        el = self.driver.find_element(By.CLASS_NAME, 'rts-counter')
+        options = Options()
+        options.add_argument("--headless=new")
+
+        options.add_argument('--disable-blink-features=AutomationControlled')
+        options.add_argument('--no-sandbox')
+        driver = webdriver.Chrome(options=options)
+        driver.get(self.url)
+        el = driver.find_element(By.CLASS_NAME, 'rts-counter')
 
         count = int(el.text.replace(',',''))
         date = str(datetime.date.today())
-        #WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, 'rts-counter')))
-        self.driver.quit()
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'rts-counter')))
+
+        driver.quit()
         with sqlite3.connect(f"{self.base}.sqlite3") as db:
             cursor = db.cursor()
             cursor.execute("INSERT INTO data(count, date) VALUES(?, ?)", (count, date))
+        print(count, date)
