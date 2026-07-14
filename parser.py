@@ -15,6 +15,8 @@ class Parser():
         self.options = Options()
         self.options.add_argument("--headless")
         self.options.add_argument("--window-size=1,1")
+        self.options.add_argument('--disable-blink-features=AutomationControlled')
+        self.options.add_argument('--no-sandbox')
         self.driver = webdriver.Chrome(options=self.options)
         with sqlite3.connect(f"{self.base}.sqlite3") as db:
             cursor = db.cursor()
@@ -26,7 +28,7 @@ class Parser():
 
         count = int(el.text.replace(',',''))
         date = str(datetime.date.today())
-        WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, 'rts-counter')))
+        #WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, 'rts-counter')))
         self.driver.quit()
         with sqlite3.connect(f"{self.base}.sqlite3") as db:
             cursor = db.cursor()
