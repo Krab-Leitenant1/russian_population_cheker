@@ -1,6 +1,7 @@
 from selenium import webdriver
 import sqlite3
 import datetime
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,6 +21,7 @@ class Parser():
             print(cursor.execute("SELECT count, date FROM data").fetchall())
     def parse(self):
         options = Options()
+
         options.add_argument("--headless=new")
 
         options.add_argument('--disable-blink-features=AutomationControlled')
