@@ -18,7 +18,7 @@ class Parser():
             cursor = db.cursor()
             cursor.executescript(
                 '''CREATE TABLE IF NOT EXISTS data(id INTEGER PRIMARY KEY , count INTEGER, date DATE)''')
-            print(cursor.execute("SELECT count, date FROM data").fetchall())
+            #print(cursor.execute("SELECT count, date FROM data").fetchall())
     def parse(self):
         options = Options()
 
